@@ -1,0 +1,3 @@
+# torchattacks==2.14.5
+torchattacks==3.2.6
+# installing mayavi2 needs too much time.
