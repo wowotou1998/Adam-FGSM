@@ -52,7 +52,7 @@ def show_one_image(subplot, images, title, color):
     # subplot.set_title(title, y=-0.25, color=color, fontsize=8)  # 图像题目
 
 
-def obtain_one_loss_value(sample, label, model):
+def obtain_a_loss_value(sample, label, model):
     from torch import nn
     criterion = nn.CrossEntropyLoss()
     loss = criterion(model(sample), label).sum().item()
@@ -73,7 +73,7 @@ def obtain_loss_matrix(u, v, sample_a, sample_b, sample_offset, label, model):
             sample = u[i][j] * sample_a + v[i][j] * sample_b + sample_offset
             # sample = v[i][j] * sample_b + sample_offset
             # sample = u[i][j] * sample_b + sample_offset
-            result[i][j] = obtain_one_loss_value(sample, label, model)
+            result[i][j] = obtain_a_loss_value(sample, label, model)
     return result
 
 
@@ -123,12 +123,12 @@ def plot_loss_3d(sample_original, label, model):
 
     # --------------------------准备基向量,确定坐标轴的大致形状---------------------------------
 
-    x_i = np.linspace(-0.5, 0.5, 100)
-    y_i = np.linspace(-0.5, 0.5, 100)
+    x_i = np.linspace(-0.5, 0.5, 50)
+    y_i = np.linspace(-0.5, 0.5, 50)
     ii, jj = np.meshgrid(x_i, y_i)  # 获得网格坐标矩阵
 
-    sample_a = torch.rand(size=sample_original.shape)
-    sample_b = torch.randn(size=sample_original.shape)
+    sample_a = torch.normal(mean=0, std=0.1, size=sample_original.shape)
+    sample_b = torch.normal(mean=0, std=0.1, size=sample_original.shape)
     sample_offset = sample_original.detach().clone()  # torch.rand(size=sample_original.shape)
     #
     device = torch.device("cuda:%d" % (0) if torch.cuda.is_available() else "cpu")
@@ -141,14 +141,28 @@ def plot_loss_3d(sample_original, label, model):
     # kk = obtain_label_matrix(ii, jj, sample_a, sample_b, label, model)
 
     # 绘制曲面
-    fig_1 = plt.figure()
-    ax = plt.axes(projection='3d')
-    ax.plot_surface(ii, jj, kk, cmap='coolwarm')
+    from matplotlib import cm
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+
+    # Plot the 3D surface
+    surf = ax.plot_surface(ii, jj, kk, cmap=cm.rainbow)
+
+    # Plot projections of the contours for each dimension.
+    ax.contour(ii, jj, kk, zdir='z', offset=kk.min(), cmap=cm.rainbow)
+
+    ax.set(xlabel='Direction 1', ylabel='Direction 2', zlabel='Loss')
+    fig.colorbar(surf,
+                 fraction=0.023, pad=0.04
+                 # shrink=0.5, aspect=5
+                 )
+    # plt.tight_layout()
     plt.show()
 
 
-def select_one_sample_to_plot(dataset, mode_name, Epsilon, Iterations, Momentum):
-    test_loader, _ = load_dataset(dataset, batch_size=1)
+def select_a_sample_to_plot(dataset, mode_name, Epsilon, Iterations, Momentum):
+    test_loader, _ = load_dataset(dataset, batch_size=1, is_shuffle=False)
 
     model, model_acc = load_model_args(mode_name)
     device = torch.device("cuda:%d" % (0) if torch.cuda.is_available() else "cpu")
@@ -188,16 +202,16 @@ if __name__ == '__main__':
     # mpl.rcParams["figure.subplot.wspace"], mpl.rcParams["figure.subplot.hspace"] = 0.1005, 0.1005
     plt.rcParams['xtick.direction'] = 'in'  # 将x周的刻度线方向设置向内
     plt.rcParams['ytick.direction'] = 'in'  # 将y轴的刻度方向设置向内
-    mpl.rcParams['figure.constrained_layout.use'] = True
+    # mpl.rcParams['figure.constrained_layout.use'] = True
 
     model_name_set = ['VGG16', 'VGG19', 'ResNet50', 'ResNet101', 'DenseNet121']
-    select_one_sample_to_plot('ImageNet',
-                              'ResNet18_ImageNet',
-                              Epsilon=5 / 255,
-                              Iterations=10,
-                              Momentum=1.0)
+    select_a_sample_to_plot('ImageNet',
+                            'ResNet18_ImageNet',
+                            Epsilon=5 / 255,
+                            Iterations=10,
+                            Momentum=1.0)
 
-    # select_one_sample_to_plot('CIFAR10',
+    # select_a_sample_to_plot('CIFAR10',
     #                      'VGG19',
     #                      Epsilon=5 / 255,
     #                      Iterations=8,
