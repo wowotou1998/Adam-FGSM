@@ -123,8 +123,8 @@ def plot_loss_3d(sample_original, label, model):
 
     # --------------------------准备基向量,确定坐标轴的大致形状---------------------------------
 
-    x_i = np.linspace(-1, 1, 100)
-    y_i = np.linspace(-1, 1, 100)
+    x_i = np.linspace(-0.5, 0.5, 100)
+    y_i = np.linspace(-0.5, 0.5, 100)
     ii, jj = np.meshgrid(x_i, y_i)  # 获得网格坐标矩阵
 
     sample_a = torch.rand(size=sample_original.shape)
@@ -147,7 +147,7 @@ def plot_loss_3d(sample_original, label, model):
     plt.show()
 
 
-def get_hard_to_classify(dataset, mode_name, Epsilon, Iterations, Momentum):
+def select_one_sample_to_plot(dataset, mode_name, Epsilon, Iterations, Momentum):
     test_loader, _ = load_dataset(dataset, batch_size=1)
 
     model, model_acc = load_model_args(mode_name)
@@ -155,35 +155,26 @@ def get_hard_to_classify(dataset, mode_name, Epsilon, Iterations, Momentum):
     model.to(device)
     model.eval()
 
-    test_count = 0
-    bar = tqdm(total=10000)
-    print('len(test_loader)', len(test_loader))
-    for data in test_loader:
-        title_set = []
-        test_count += 1
-        # train_loader is a class, DataSet is a list(length is 2,2 tensors) ,images is a tensor,labels is a tensor
-        # images is consisted by 64 tensor, so we will get the 64 * 10 matrix. labels is a 64*1 matrix, like a vector.
-        original_images, original_labels = data
-        original_images = original_images.to(device)
-        original_labels = original_labels.to(device)
-        _, predict = torch.max(F.softmax(model(original_images), dim=1), 1)
-        # 选择预测正确的original_images和original_labels，剔除预测不正确的original_images和original_labels
-        # predict_answer为一维向量，大小为batch_size
-        predict_answer = (original_labels == predict)
-        # torch.nonzero会返回一个二维矩阵，大小为（nozero的个数）*（1）
-        no_zero_predict_answer = torch.nonzero(predict_answer)
-        # 我们要确保 predict_correct_index 是一个一维向量,因此使用flatten,其中的元素内容为下标
-        predict_correct_index = torch.flatten(no_zero_predict_answer)
-        # print('predict_correct_index', predict_correct_index)
-        images = torch.index_select(original_images, 0, predict_correct_index)
-        labels = torch.index_select(original_labels, 0, predict_correct_index)
-        if labels.shape[0] == 0:
-            bar.update(labels.shape[0])
-            continue
+    # train_loader is a class, DataSet is a list(length is 2,2 tensors) ,images is a tensor,labels is a tensor
+    # images is consisted by 64 tensor, so we will get the 64 * 10 matrix. labels is a 64*1 matrix, like a vector.
+    original_images, original_labels = next(iter(test_loader))
+    original_images = original_images.to(device)
+    original_labels = original_labels.to(device)
+    _, predict = torch.max(F.softmax(model(original_images), dim=1), 1)
+    # 选择预测正确的original_images和original_labels，剔除预测不正确的original_images和original_labels
+    # predict_answer为一维向量，大小为batch_size
+    predict_answer = (original_labels == predict)
+    # torch.nonzero会返回一个二维矩阵，大小为（nozero的个数）*（1）
+    no_zero_predict_answer = torch.nonzero(predict_answer)
+    # 我们要确保 predict_correct_index 是一个一维向量,因此使用flatten,其中的元素内容为下标
+    predict_correct_index = torch.flatten(no_zero_predict_answer)
+    # print('predict_correct_index', predict_correct_index)
+    images = torch.index_select(original_images, 0, predict_correct_index)
+    labels = torch.index_select(original_labels, 0, predict_correct_index)
 
-        plot_loss_3d(images, labels, model)
-        # pca_contour_3d(sample_a, sample_b, labels, model, many_adv_images_list)
-        break
+    plot_loss_3d(original_images, original_labels, model)
+    # plot_loss_3d(images, labels, model)
+    # pca_contour_3d(sample_a, sample_b, labels, model, many_adv_images_list)
 
 
 if __name__ == '__main__':
@@ -192,20 +183,21 @@ if __name__ == '__main__':
     mpl.rcParams['axes.unicode_minus'] = False
     mpl.rcParams['savefig.dpi'] = 200  # 保存图片分辨率
     mpl.rcParams['figure.dpi'] = 200  # 分辨率
-    mpl.rcParams["figure.subplot.left"], mpl.rcParams["figure.subplot.right"] = 0.05, 0.99
-    mpl.rcParams["figure.subplot.bottom"], mpl.rcParams["figure.subplot.top"] = 0.07, 0.99
-    mpl.rcParams["figure.subplot.wspace"], mpl.rcParams["figure.subplot.hspace"] = 0.1005, 0.1005
+    # mpl.rcParams["figure.subplot.left"], mpl.rcParams["figure.subplot.right"] = 0.05, 0.99
+    # mpl.rcParams["figure.subplot.bottom"], mpl.rcParams["figure.subplot.top"] = 0.07, 0.99
+    # mpl.rcParams["figure.subplot.wspace"], mpl.rcParams["figure.subplot.hspace"] = 0.1005, 0.1005
     plt.rcParams['xtick.direction'] = 'in'  # 将x周的刻度线方向设置向内
     plt.rcParams['ytick.direction'] = 'in'  # 将y轴的刻度方向设置向内
+    mpl.rcParams['figure.constrained_layout.use'] = True
 
     model_name_set = ['VGG16', 'VGG19', 'ResNet50', 'ResNet101', 'DenseNet121']
-    get_hard_to_classify('ImageNet',
-                         'ResNet50_ImageNet',
-                         Epsilon=5 / 255,
-                         Iterations=10,
-                         Momentum=1.0)
+    select_one_sample_to_plot('ImageNet',
+                              'ResNet18_ImageNet',
+                              Epsilon=5 / 255,
+                              Iterations=10,
+                              Momentum=1.0)
 
-    # get_hard_to_classify('CIFAR10',
+    # select_one_sample_to_plot('CIFAR10',
     #                      'VGG19',
     #                      Epsilon=5 / 255,
     #                      Iterations=8,
