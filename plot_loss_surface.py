@@ -77,7 +77,7 @@ def obtain_loss_matrix(u, v, sample_a, sample_b, sample_offset, label, model):
     return result
 
 
-def obtain_one_predict_label(image_size, vectors, factors, model):
+def obtain_a_predict_label(image_size, vectors, factors, model):
     n_vector = len(vectors)
     batch, channel, h, w = image_size
     sample = np.zeros((batch * channel * h * w), dtype=float)
@@ -211,11 +211,11 @@ if __name__ == '__main__':
                             Iterations=10,
                             Momentum=1.0)
 
-    # select_a_sample_to_plot('CIFAR10',
-    #                      'VGG19',
-    #                      Epsilon=5 / 255,
-    #                      Iterations=8,
-    #                      Momentum=1.0)
+    select_a_sample_to_plot('MNIST',
+                            'LeNet5',
+                            Epsilon=5 / 255,
+                            Iterations=8,
+                            Momentum=1.0)
 
     print()
     print("----ALL WORK HAVE BEEN DONE!!!----")
