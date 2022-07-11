@@ -9,7 +9,6 @@ print(pca.components_)
 print(pca.singular_values_)
 print(pca.explained_variance_ratio_)
 
-
 print(__doc__)
 
 # Authors: Gael Varoquaux
@@ -24,7 +23,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-
 # #############################################################################
 # Create the data
 
@@ -35,6 +33,7 @@ np.random.seed(4)
 def pdf(x):
     return 0.5 * (stats.norm(scale=0.25 / e).pdf(x)
                   + stats.norm(scale=4 / e).pdf(x))
+
 
 y = np.random.normal(scale=0.5, size=(30000))
 x = np.random.normal(scale=0.5, size=(30000))

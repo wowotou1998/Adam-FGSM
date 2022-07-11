@@ -141,13 +141,13 @@ if __name__ == '__main__':
     batch_size = 200
     #
     attack_method_set = ['FGSM', 'I_FGSM', 'PGD', 'MI_FGSM', 'Adam_FGSM']
-    model_name_set = ['FC_256_128','LeNet5']
+    model_name_set = ['FC_256_128', 'LeNet5']
     attack_many_model(model_name_set,
                       attack_method_set,
                       batch_size,
                       work_name='MNIST_performance',
-                      Epsilon_set=[40,42,50],
-                      Iterations_set=[6,8,16],
+                      Epsilon_set=[40, 42, 50],
+                      Iterations_set=[6, 8, 16],
                       Momentum=1.0)
 
     # attack_many_model(model_name_set, attack_method_set,

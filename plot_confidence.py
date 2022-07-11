@@ -59,7 +59,6 @@ color_set = [light_blue, indigo, orange, light_green, teal]
 model_name_set = ['FC-256-128', 'LeNet-5', 'VGG-16', 'VGG-19', 'Res-50', 'Res-101', 'Dense-121']
 attack_method_set = ['FGSM', 'I-FGSM', 'PGD', 'MI-FGSM', 'Adam-FGSM']
 
-
 legend_set = []
 with open('../Checkpoint/confidence.csv', 'r') as f:
     content = csv.reader(f)

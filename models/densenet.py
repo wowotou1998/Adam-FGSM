@@ -78,13 +78,13 @@ class DenseNet(nn.Module):
         out = self.trans1(self.dense1(out))
         out = self.trans2(self.dense2(out))
         out = self.trans3(self.dense3(out))
-        print('dense trans3 layer', out[0]) # 这里出现了 -inf
+        print('dense trans3 layer', out[0])  # 这里出现了 -inf
         out = self.dense4(out)
         print('dense dense4 layer', out[0])
         out = F.avg_pool2d(F.relu(self.bn(out)), 4)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
-        print('dense last layer',out[0])
+        print('dense last layer', out[0])
         return out
 
 

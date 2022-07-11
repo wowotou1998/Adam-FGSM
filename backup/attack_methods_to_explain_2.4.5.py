@@ -7,7 +7,6 @@ from tqdm import tqdm
 from torchattacks.attack import Attack
 from torchattacks import MIFGSM, BIM
 
-
 # from torchattacks import BIM
 
 # 相似性范围从-1到1：
@@ -16,6 +15,8 @@ from torchattacks import MIFGSM, BIM
 '''
 使用自己的类的变量来保存攻击过程中的余弦相似度和L1和L_inf值
 '''
+
+
 class I_FGSM(Attack):
     def __init__(self, model, eps=4 / 255, alpha=1 / 255, steps=0):
         super().__init__("I_FGSM", model)

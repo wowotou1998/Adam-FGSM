@@ -8,6 +8,7 @@ from tqdm import tqdm
 from .attack_methods import adam_fgsm_attack, fgsm_attack, i_fgsm_attack, mi_fgsm_attack
 from .utils import show_img
 
+
 def do_fsgm_for_model(model, test_loader, criterion, epsilon):
     test_count = 0
     sample_attacked = 0

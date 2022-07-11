@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def f(u, v, sample,label):
+def f(u, v, sample, label):
     """
     计算高度的函数
     :param x: 向量

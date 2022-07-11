@@ -102,8 +102,6 @@ class MI_FGSM(Attack):
         images = images.clone().detach().to(self.device)
         labels = labels.clone().detach().to(self.device)
 
-
-
         if self._targeted:
             target_labels = self._get_target_label(images, labels)
 

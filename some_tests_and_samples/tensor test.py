@@ -46,7 +46,7 @@ y = torch.ones(6, dtype=torch.float) * 6
 print(y / 3)
 a = torch.zeros((2, 1))
 b = torch.nonzero(a)
-c = torch.index_select(a, dim=0,index=torch.flatten(b))
+c = torch.index_select(a, dim=0, index=torch.flatten(b))
 print(type(c))
 print(type(c.shape[0]))
 print(c)

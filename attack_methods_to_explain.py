@@ -15,6 +15,7 @@ torchattacks==3.2.6没问题， 还是可以记录在迭代过程中的数据。
 只有当 self._return_type == 'int' 时才会有麻烦， 因为此时会将所有数据变成int型，
 """
 
+
 class I_FGSM(Attack):
     def __init__(self, model, eps=4 / 255, alpha=1 / 255, steps=0):
         super().__init__("I_FGSM", model)
