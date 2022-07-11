@@ -13,7 +13,9 @@ from torchattacks.attack import Attack
 # 相似性范围从-1到1：
 # -1意味着两个向量指向的方向正好截然相反，1表示它们的指向是完全相同的，
 # 0通常表示它们之间是独立的，而在这之间的值则表示中间的相似性或相异性。
-
+"""
+使用变量 L 来保证存储迭代过程中的数据
+"""
 class I_FGSM(Attack):
     def __init__(self, model, eps=4 / 255, alpha=1 / 255, steps=0):
         super().__init__("I_FGSM", model)
