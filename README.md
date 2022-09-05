@@ -4,7 +4,7 @@
 
 # Adam-FGSM
 
-Official implementation for
+Official code implementation for paper
 
 - Generate Adversarial Examples by Adaptive Moment Iterative Fast Gradient Sign Method, Applied Intelligence 2022. ([Paper](https://doi.org/10.1007/s10489-022-03437-z))
 
